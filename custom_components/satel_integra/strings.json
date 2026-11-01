@@ -203,7 +203,7 @@
       "message": "[%key:component::satel_integra::config::error::connection_initialization_failed%]"
     },
     "missing_alarm_access_code": {
-      "message": "No user code was provided and none is stored in the integration options."
+      "message": "No user code was provided. Enter the code or enable the stored code for alarm panels in the integration options."
     },
     "missing_output_access_code": {
       "message": "Cannot control switchable outputs because no user code is configured for this Satel Integra entry. Configure a code in the integration options to enable output control."
@@ -267,8 +267,8 @@
           "all_arm_modes": "All Satel arming modes in alarm panels"
         },
         "data_description": {
-          "code": "Code used for switchable outputs, zone bypass switches and service actions (and for alarm panels if enabled below).",
-          "use_code_for_panels": "Arm and disarm without entering a code in Home Assistant. Anyone with access to Home Assistant can then disarm the alarm.",
+          "code": "Code used for switchable outputs, zone bypass switches and other service actions. Alarm panels and the arm, disarm and clear alarm actions use it only if enabled below.",
+          "use_code_for_panels": "Arm and disarm without entering a code, on the alarm panels and with the arm, disarm and clear alarm actions. Anyone with access to Home Assistant can then disarm the alarm.",
           "all_partitions_panel": "One alarm panel that arms/disarms all selected partitions with a single command.",
           "all_partitions": "Leave empty to use all configured partitions.",
           "event_log_interval": "How often the panel event log is checked for new events (0 disables the event entity and satel_integra_event events).",
@@ -478,7 +478,7 @@
         },
         "code": {
           "name": "Code",
-          "description": "User code (default: the code stored in the options)."
+          "description": "User code (required unless the stored code is enabled for alarm panels)."
         }
       }
     },
@@ -500,7 +500,7 @@
         },
         "code": {
           "name": "Code",
-          "description": "User code (default: the code stored in the options)."
+          "description": "User code (required unless the stored code is enabled for alarm panels)."
         }
       }
     },
@@ -518,7 +518,7 @@
         },
         "code": {
           "name": "Code",
-          "description": "User code (default: the code stored in the options)."
+          "description": "User code (required unless the stored code is enabled for alarm panels)."
         }
       }
     },

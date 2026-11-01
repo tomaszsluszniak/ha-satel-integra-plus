@@ -311,10 +311,24 @@ async def main():
         )
         sim.received.clear()
         await handler(
-            call("arm", partitions=[1, 2], mode=0, force=True, no_bypass=False)
+            call(
+                "arm",
+                code="1234",
+                partitions=[1, 2],
+                mode=0,
+                force=True,
+                no_bypass=False,
+            )
         )
         assert sim.received[-1][0] == 0xA0
-        await handler(call("disarm", clear_alarm=True))
+        # the stored code controls the alarm only with the panel option enabled
+        try:
+            await handler(call("disarm", clear_alarm=True))
+        except services.ServiceValidationError:
+            pass
+        else:
+            raise AssertionError("disarm with the stored code not rejected")
+        await handler(call("disarm", code="1234", clear_alarm=True))
         assert [f[0] for f in sim.received[-2:]] == [0x84, 0x85]
         await handler(call("bypass_zones", zones=[7], isolate=True))
         assert sim.last_control[0] == 0x90

@@ -197,7 +197,7 @@
       "message": "Połączono, ale nie udało się odczytać danych z centrali. Jeśli centrala wymaga szyfrowania, sprawdź klucz integracji."
     },
     "missing_alarm_access_code": {
-      "message": "Nie podano kodu użytkownika, a w opcjach integracji nie ma zapisanego kodu."
+      "message": "Nie podano kodu użytkownika. Wpisz kod albo włącz w opcjach integracji zapisany kod dla paneli alarmowych."
     },
     "missing_output_access_code": {
       "message": "Brak kodu użytkownika w opcjach integracji. Wpisz kod w opcjach, aby sterować wyjściami i blokadami wejść."
@@ -261,8 +261,8 @@
           "all_arm_modes": "Wszystkie tryby czuwania Satel w panelach"
         },
         "data_description": {
-          "code": "Kod używany do sterowania wyjściami, blokadami wejść i w akcjach (oraz w panelach alarmowych, jeśli włączysz to niżej).",
-          "use_code_for_panels": "Załączanie i wyłączanie czuwania bez wpisywania kodu. Uwaga: każdy z dostępem do Home Assistant będzie mógł wyłączyć alarm.",
+          "code": "Kod używany do sterowania wyjściami, blokadami wejść i w pozostałych akcjach. Panele alarmowe oraz akcje uzbrajania, wyłączania czuwania i kasowania alarmu używają go tylko wtedy, gdy włączysz to niżej.",
+          "use_code_for_panels": "Załączanie i wyłączanie czuwania bez wpisywania kodu, w panelach alarmowych i w akcjach uzbrajania, wyłączania czuwania i kasowania alarmu. Uwaga: każdy z dostępem do Home Assistant będzie mógł wyłączyć alarm.",
           "all_partitions_panel": "Jeden panel, który jednym poleceniem załącza/wyłącza czuwanie we wszystkich wybranych strefach.",
           "all_partitions": "Pozostaw puste, aby użyć wszystkich skonfigurowanych stref.",
           "event_log_interval": "Co ile sekund sprawdzać dziennik zdarzeń centrali (0 wyłącza encję zdarzeń i zdarzenia satel_integra_event).",
@@ -472,7 +472,7 @@
         },
         "code": {
           "name": "Kod",
-          "description": "Kod użytkownika (domyślnie kod zapisany w opcjach)."
+          "description": "Kod użytkownika (wymagany, chyba że w opcjach włączono zapisany kod dla paneli alarmowych)."
         }
       }
     },
@@ -494,7 +494,7 @@
         },
         "code": {
           "name": "Kod",
-          "description": "Kod użytkownika (domyślnie kod zapisany w opcjach)."
+          "description": "Kod użytkownika (wymagany, chyba że w opcjach włączono zapisany kod dla paneli alarmowych)."
         }
       }
     },
@@ -512,7 +512,7 @@
         },
         "code": {
           "name": "Kod",
-          "description": "Kod użytkownika (domyślnie kod zapisany w opcjach)."
+          "description": "Kod użytkownika (wymagany, chyba że w opcjach włączono zapisany kod dla paneli alarmowych)."
         }
       }
     },

@@ -1,6 +1,9 @@
 {
   "domain": "satel_integra",
   "name": "Satel Integra (extended)",
+  "categories": [
+    "security_safety.alarm_systems"
+  ],
   "codeowners": [
     "@tomaszsluszniak"
   ],
@@ -17,7 +20,7 @@
     "satel_integra"
   ],
   "requirements": [
-    "satel-integra==1.6.0"
+    "satel-integra>=1.6.0,<1.7"
   ],
-  "version": "1.0.0"
+  "version": "2026.11.6"
 }

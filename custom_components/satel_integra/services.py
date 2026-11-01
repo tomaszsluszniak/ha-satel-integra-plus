@@ -14,7 +14,7 @@ from homeassistant.core import (
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv
 
-from .const import DOMAIN
+from .const import CONF_USE_CODE_FOR_PANELS, DOMAIN
 from .coordinator import SatelConfigEntry
 from .helpers import async_validate_command, resolve_code
 
@@ -39,6 +39,9 @@ SERVICE_UNBYPASS_ZONES = "unbypass_zones"
 SERVICE_SET_OUTPUTS = "set_outputs"
 SERVICE_CLEAR_TROUBLE_MEMORY = "clear_trouble_memory"
 SERVICE_READ_EVENT_LOG = "read_event_log"
+
+# These control the alarm, so the stored code follows the alarm panel option
+_PANEL_SERVICES = {SERVICE_ARM, SERVICE_DISARM, SERVICE_CLEAR_ALARM}
 
 _NUMBERS = probatio.All(
     cv.ensure_list, [probatio.All(probatio.Coerce(int), probatio.Range(min=1, max=256))]
@@ -126,7 +129,12 @@ def _partitions(entry: SatelConfigEntry, call: ServiceCall) -> list[int]:
 
 
 def _code(entry: SatelConfigEntry, call: ServiceCall) -> str:
-    return resolve_code(call.data.get(ATTR_CODE), entry.runtime_data.client.stored_code)
+    stored = entry.runtime_data.client.stored_code
+    if call.service in _PANEL_SERVICES and not entry.options.get(
+        CONF_USE_CODE_FOR_PANELS, False
+    ):
+        stored = None
+    return resolve_code(call.data.get(ATTR_CODE), stored)
 
 
 async def _async_handle(call: ServiceCall) -> ServiceResponse:

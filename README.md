@@ -13,19 +13,18 @@ identyfikatory encji zostają bez zmian. Dochodzą nowe encje, opcje i akcje.
 
 ## Co dodaje do wbudowanej integracji
 
-Wbudowana integracja tworzy osobny panel alarmowy dla każdej strefy i ma dwa tryby uzbrajania.
-Uzbrojenie całego domu to kilka osobnych poleceń, a błędny kod albo odmowa uzbrojenia nie są
-w ogóle zgłaszane. Biblioteka `satel-integra`, z której korzysta, obsługuje tylko część protokołu
-INT-RS / ETHM-1.
+Wbudowana integracja tworzy osobny panel alarmowy dla każdej strefy i ma dwa tryby uzbrajania,
+więc uzbrojenie całego domu to kilka osobnych poleceń. Biblioteka `satel-integra`, z której
+korzysta, obsługuje tylko część protokołu INT-RS / ETHM-1.
 
-| | wbudowana `satel_integra` | ta integracja |
+| | wbudowana `satel_integra` (2026.10) | ta integracja |
 |---|---|---|
 | uzbrojenie / wyłączenie wszystkich stref jednym poleceniem | nie (panel na strefę) | **panel „Wszystkie strefy”** |
 | tryby czuwania Satel w interfejsie | poza domem = 0, w domu = jeden ustawiony tryb | **wszystkie cztery**: poza domem = 0 (pełne), niestandardowe = 1 (pełne + blokady), w domu = 2 (bez wewnętrznych), noc = 3 (bez wewnętrznych i bez opóźnień) |
-| wynik poleceń czuwania i wyjść | niesprawdzany | błędny kod, brak uprawnień, „nie można uzbroić, możliwe wymuszenie”, brak odpowiedzi – zgłaszane jako błąd |
+| wynik poleceń czuwania i wyjść | niesprawdzany (sprawdzany od 2026.11) | błędny kod, brak uprawnień, „nie można uzbroić, możliwe wymuszenie”, brak odpowiedzi – zgłaszane jako błąd |
 | sabotaż, alarm, pamięć alarmu, blokada, izolacja, maskowanie wejść | nie | czujniki i **przełącznik blokady** dla każdego wejścia |
 | strefy z naruszonymi wejściami (gotowość do uzbrojenia), pamięć alarmu | nie | czujniki i atrybuty paneli |
-| stan centrali i awarie | nie (2026.10) | tryb serwisowy, awaria systemu, AC, akumulator i pozostałe awarie z części 1 |
+| stan centrali i awarie | nie (dostępne od 2026.11) | tryb serwisowy, awaria systemu, AC, akumulator i pozostałe awarie z części 1 |
 | dziennik zdarzeń centrali | nie | **encja zdarzeń** i `satel_integra_event` dla każdego nowego zdarzenia, z treścią i nazwami |
 | wymuszone uzbrojenie, blokowanie wejść, przełączanie wielu wyjść, kasowanie pamięci awarii | nie | **akcje** |
 | karta Lovelace | nie | **wbudowana karta**, ładowana automatycznie |
@@ -48,8 +47,13 @@ INT-RS / ETHM-1.
 Instalacja ręczna: skopiuj `custom_components/satel_integra` do `/config/custom_components/`
 i zrestartuj Home Assistant.
 
-Przy starcie Home Assistant instaluje bibliotekę `satel-integra==1.6.0`. Wymagany Home Assistant
+Przy starcie Home Assistant instaluje bibliotekę `satel-integra` 1.6.x. Wymagany Home Assistant
 2026.10 lub nowszy.
+
+**Zmiana po przejściu z wbudowanej integracji:** opcja *Wszystkie tryby czuwania Satel w panelach*
+jest domyślnie włączona. `alarm_arm_home` uzbraja wtedy zawsze w trybie 2, a nie w trybie ustawionym
+dla strefy (domyślnie 1), a strefa czuwająca w trybie 1 lub 3 ma stan `armed_custom_bypass` lub
+`armed_night`, a nie `armed_home`. Jeśli automatyzacje na tym polegają, wyłącz tę opcję.
 
 **Powrót do wbudowanej wersji:** usuń integrację w HACS i zrestartuj. Wbudowana integracja
 ponownie przejmie ten sam wpis, a encje dodane przez tę wersję zostaną osierocone i można je usunąć.
@@ -60,8 +64,8 @@ Ustawienia → Urządzenia i usługi → Satel Integra → **Konfiguruj**:
 
 | Opcja | Domyślnie | |
 |---|---|---|
-| Kod użytkownika | – | kod do sterowania wyjściami, blokadami wejść i w akcjach (oraz w panelach alarmowych, patrz niżej) |
-| Używaj zapisanego kodu w panelach alarmowych | wył. | załączanie i wyłączanie czuwania bez wpisywania kodu; każdy z dostępem do Home Assistant może wtedy wyłączyć alarm |
+| Kod użytkownika | – | kod do sterowania wyjściami, blokadami wejść i w pozostałych akcjach (oraz w panelach alarmowych i akcjach czuwania, patrz niżej) |
+| Używaj zapisanego kodu w panelach alarmowych | wył. | załączanie i wyłączanie czuwania bez wpisywania kodu, w panelach i w akcjach `arm`, `disarm`, `clear_alarm`; każdy z dostępem do Home Assistant może wtedy wyłączyć alarm |
 | Wszystkie tryby czuwania Satel w panelach | wł. | poza domem = 0, niestandardowe = 1, w domu = 2, noc = 3; po wyłączeniu: poza domem = 0, w domu = tryb ustawiony dla strefy |
 | Panel „Wszystkie strefy” | wł. | jeden panel dla wszystkich stref |
 | Strefy sterowane panelem „Wszystkie strefy” | wszystkie | wybrane spośród skonfigurowanych stref |
@@ -117,6 +121,10 @@ i wyjścia są wykrywane automatycznie. Język polski i angielski.
 
 Wszystkie akcje przyjmują opcjonalne `config_entry_id` (potrzebne tylko przy więcej niż jednej
 centrali) oraz opcjonalny `code` (domyślnie kod z opcji).
+
+Akcje `arm`, `disarm` i `clear_alarm` używają kodu z opcji tylko wtedy, gdy włączona jest opcja
+*Używaj zapisanego kodu w panelach alarmowych*. W przeciwnym razie trzeba podać `code`, tak samo
+jak w panelu alarmowym.
 
 | Akcja | Parametry |
 |---|---|
@@ -182,10 +190,10 @@ actions:
         ({{ trigger.event.data.source_name }})
 ```
 
-## Poprawki biblioteki `satel-integra` 1.6.0
+## Poprawki biblioteki `satel-integra` 1.6
 
-Nakładane z poziomu integracji (`satel_ext.py`), bez forka biblioteki – dlatego jej wersja jest
-przypięta:
+Nakładane z poziomu integracji (`satel_ext.py`), bez forka biblioteki. Zależą od jej wnętrza,
+dlatego manifest dopuszcza tylko serię 1.6.x (`satel-integra>=1.6.0,<1.7`):
 
 - **Połączenia szyfrowane:** biblioteka czytała ramkę przez `StreamReader.read(n)`, które może
   zwrócić mniej bajtów, gdy TCP podzieli ramkę; ucięta ramka nie daje się odszyfrować i połączenie

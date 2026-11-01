@@ -113,6 +113,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: SatelConfigEntry) -> boo
     await client.async_connect()
     await coordinator_temperatures.async_config_entry_first_refresh()
     if coordinator_events is not None:
+        # Polling needs a listener: keep firing satel_integra_event when the
+        # event entity is disabled
+        entry.async_on_unload(coordinator_events.async_add_listener(lambda: None))
         await coordinator_events.async_refresh()
 
     try:

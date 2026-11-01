@@ -9,7 +9,7 @@
  * show_history (default true), confirm_outputs (default true), exclude (entity ids).
  */
 
-const CARD_VERSION = "1.0.0";
+const CARD_VERSION = "2026.11.6";
 
 const FEATURE = { ARM_HOME: 1, ARM_AWAY: 2, ARM_NIGHT: 4, ARM_CUSTOM_BYPASS: 16 };
 

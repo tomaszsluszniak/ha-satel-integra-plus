@@ -1,6 +1,6 @@
 """Extensions of the satel_integra library used by this integration.
 
-The library (pinned to satel-integra==1.6.0) covers only part of the INT-RS /
+The library (satel-integra 1.6.x) covers only part of the INT-RS /
 ETHM-1 protocol. This module adds, without forking the library:
 
 * monitoring of additional state commands (zone tamper/alarm/bypass/...,
@@ -12,7 +12,8 @@ ETHM-1 protocol. This module adds, without forking the library:
 * reading the event log (0x8C) with event texts (0x8F) and device names (0xEE),
 * fixes for library issues found during review (see `_apply_library_fixes`).
 
-It depends on library internals, so the integration pins an exact version.
+It depends on library internals, so the manifest allows only the 1.6.x series.
+Hassfest rejects an exact pin of a package Home Assistant depends on.
 """
 
 from __future__ import annotations
@@ -181,6 +182,8 @@ EVENT_CLASSES = {
 _EVENT_KIND_ZONE = {1, 4, 32}
 # ... and a user
 _EVENT_KIND_USER = {2, 3, 6, 7}
+# ... and a partition in PPPPP (other kinds keep e.g. a keypad or telephone there)
+_EVENT_KIND_PARTITION = {1, 2, 5, 11, 12, 13, 15, 32}
 
 _DEVICE_TYPE_ZONE = 1
 _DEVICE_TYPE_USER = 2
@@ -607,7 +610,7 @@ class SatelExtended(AsyncSatel):
             source_name = await self.read_device_name(_DEVICE_TYPE_USER, event.source)
         partition_name = (
             await self.read_device_name(_DEVICE_TYPE_PARTITION, event.partition)
-            if event.partition
+            if kind in _EVENT_KIND_PARTITION and event.partition
             else None
         )
 
