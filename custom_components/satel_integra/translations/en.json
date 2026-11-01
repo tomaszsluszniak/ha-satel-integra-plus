@@ -1,0 +1,610 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Device is already configured"
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "connection_initialization_failed": "Successfully connected, but failed to read data from the panel. Please check the integration encryption key is correct if your panel requires encryption.",
+      "panel_busy": "Successfully connected, but alarm panel reports it's busy. Please check no other connections are active.",
+      "unknown": "Unexpected error"
+    },
+    "step": {
+      "code": {
+        "data": {
+          "code": "Access code"
+        },
+        "data_description": {
+          "code": "Code to toggle switchable outputs"
+        }
+      },
+      "reconfigure": {
+        "data": {
+          "encryption_key": "Integration encryption key",
+          "host": "Host",
+          "port": "Port"
+        },
+        "data_description": {
+          "encryption_key": "If the alarm panel requires encryption, enter the integration encryption key here.",
+          "host": "The IP address of the alarm panel",
+          "port": "The port of the alarm panel"
+        }
+      },
+      "user": {
+        "data": {
+          "encryption_key": "Integration encryption key",
+          "host": "Host",
+          "port": "Port"
+        },
+        "data_description": {
+          "encryption_key": "If the alarm panel requires encryption, enter the integration encryption key here.",
+          "host": "The IP address of the alarm panel",
+          "port": "The port of the alarm panel"
+        }
+      }
+    }
+  },
+  "config_subentries": {
+    "output": {
+      "entry_type": "Output",
+      "error": {
+        "already_configured": "Device is already configured"
+      },
+      "initiate_flow": {
+        "user": "Add output"
+      },
+      "step": {
+        "reconfigure": {
+          "data": {
+            "name": "Name",
+            "type": "Output type"
+          },
+          "data_description": {
+            "name": "The name to give to the sensor",
+            "type": "Choose the device class you would like the sensor to show as"
+          },
+          "title": "Reconfigure output {output_number}"
+        },
+        "user": {
+          "data": {
+            "name": "Name",
+            "output_number": "Output number",
+            "type": "Output type"
+          },
+          "data_description": {
+            "name": "The name to give to the sensor",
+            "output_number": "Enter output number to configure",
+            "type": "Choose the device class you would like the sensor to show as"
+          },
+          "title": "Configure output"
+        }
+      }
+    },
+    "partition": {
+      "entry_type": "Partition",
+      "error": {
+        "already_configured": "Device is already configured"
+      },
+      "initiate_flow": {
+        "user": "Add partition"
+      },
+      "step": {
+        "reconfigure": {
+          "data": {
+            "arm_home_mode": "Arm home mode",
+            "name": "Name"
+          },
+          "data_description": {
+            "arm_home_mode": "The arming mode to use for 'arm home':\nMode 1 fully arms and bypasses zones that have the 'Bypassed if no exit' option enabled.\nMode 2 disarms interior zones; exterior zones trigger silent alarms and other alarm zones trigger loud alarms.\nMode 3 is like mode 2, but delayed zones are instant.\nUsed only when 'All Satel arming modes in alarm panels' is turned off in the integration options."
+          },
+          "title": "Reconfigure partition {partition_number}"
+        },
+        "user": {
+          "data": {
+            "arm_home_mode": "Arm home mode",
+            "name": "Name",
+            "partition_number": "Partition number"
+          },
+          "data_description": {
+            "arm_home_mode": "The arming mode to use for 'arm home':\nMode 1 fully arms and bypasses zones that have the 'Bypassed if no exit' option enabled.\nMode 2 disarms interior zones; exterior zones trigger silent alarms and other alarm zones trigger loud alarms.\nMode 3 is like mode 2, but delayed zones are instant.\nUsed only when 'All Satel arming modes in alarm panels' is turned off in the integration options.",
+            "name": "The name to give to the alarm panel",
+            "partition_number": "Enter partition number to configure"
+          },
+          "title": "Configure partition"
+        }
+      }
+    },
+    "switchable_output": {
+      "entry_type": "Switchable output",
+      "error": {
+        "already_configured": "Device is already configured"
+      },
+      "initiate_flow": {
+        "user": "Add switchable output"
+      },
+      "step": {
+        "reconfigure": {
+          "data": {
+            "name": "Name"
+          },
+          "data_description": {
+            "name": "The name to give to the switch"
+          },
+          "title": "Reconfigure switchable output {switchable_output_number}"
+        },
+        "user": {
+          "data": {
+            "name": "Name",
+            "switchable_output_number": "Switchable output number"
+          },
+          "data_description": {
+            "name": "The name to give to the switch",
+            "switchable_output_number": "Enter switchable output number to configure"
+          },
+          "title": "Configure switchable output"
+        }
+      }
+    },
+    "zone": {
+      "abort": {
+        "entry_not_loaded": "Cannot validate zone temperature support while the integration is disabled."
+      },
+      "entry_type": "Zone",
+      "error": {
+        "already_configured": "Device is already configured",
+        "zone_does_not_report_temperature": "This zone does not report temperature data."
+      },
+      "initiate_flow": {
+        "user": "Add zone"
+      },
+      "step": {
+        "reconfigure": {
+          "data": {
+            "enable_temperature_sensor": "Enable temperature sensor",
+            "name": "Name",
+            "type": "Zone type"
+          },
+          "data_description": {
+            "enable_temperature_sensor": "Enable this if the zone also reports a temperature reading",
+            "name": "The name to give to the sensor",
+            "type": "Choose the device class you would like the sensor to show as"
+          },
+          "title": "Reconfigure zone {zone_number}"
+        },
+        "user": {
+          "data": {
+            "enable_temperature_sensor": "Enable temperature sensor",
+            "name": "Name",
+            "type": "Zone type",
+            "zone_number": "Zone number"
+          },
+          "data_description": {
+            "enable_temperature_sensor": "Enable this if the zone also reports a temperature reading",
+            "name": "The name to give to the sensor",
+            "type": "Choose the device class you would like the sensor to show as",
+            "zone_number": "Enter zone number to configure"
+          },
+          "title": "Configure zone"
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Failed to connect"
+    },
+    "connection_initialization_failed": {
+      "message": "Successfully connected, but failed to read data from the panel. Please check the integration encryption key is correct if your panel requires encryption."
+    },
+    "missing_alarm_access_code": {
+      "message": "No user code was provided and none is stored in the integration options."
+    },
+    "missing_output_access_code": {
+      "message": "Cannot control switchable outputs because no user code is configured for this Satel Integra entry. Configure a code in the integration options to enable output control."
+    },
+    "monitoring_start_failed": {
+      "message": "Connected to the alarm panel, but the panel did not confirm the request to start sending status updates."
+    },
+    "panel_busy": {
+      "message": "Successfully connected, but alarm panel reports it's busy. Please check no other connections are active."
+    },
+    "invalid_code_format": {
+      "message": "The code must contain 4 to 16 digits."
+    },
+    "command_rejected_wrong_code": {
+      "message": "The panel rejected the command: user code not found."
+    },
+    "command_rejected_no_access": {
+      "message": "The panel rejected the command: the user has no access to the selected partitions/zones."
+    },
+    "command_rejected_can_force": {
+      "message": "The panel cannot arm (e.g. violated zones), but forced arming is possible."
+    },
+    "command_rejected_cannot_arm": {
+      "message": "The panel cannot arm the selected partitions."
+    },
+    "command_rejected": {
+      "message": "The panel rejected the command (result {code})."
+    },
+    "not_connected": {
+      "message": "Not connected to the alarm panel, the command was not sent."
+    },
+    "no_response": {
+      "message": "The alarm panel did not answer the command. Check the state before retrying."
+    },
+    "invalid_command": {
+      "message": "Invalid command: {error}"
+    },
+    "command_failed": {
+      "message": "The command failed: {error}"
+    },
+    "config_entry_required": {
+      "message": "Select the Satel Integra entry (more than one is loaded or none is loaded)."
+    },
+    "config_entry_not_loaded": {
+      "message": "The selected Satel Integra entry is not loaded."
+    },
+    "no_bypass_unsupported": {
+      "message": "The communication module does not support arming without bypasses (requires INT-RS Plus / ETHM-1 Plus 2.19 or newer)."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Satel Integra options",
+        "data": {
+          "code": "Access code",
+          "use_code_for_panels": "Use the stored code for alarm panels",
+          "all_partitions_panel": "Create the \"All partitions\" alarm panel",
+          "all_partitions": "Partitions controlled by the \"All partitions\" panel",
+          "event_log_interval": "Event log polling interval",
+          "all_arm_modes": "All Satel arming modes in alarm panels"
+        },
+        "data_description": {
+          "code": "Code used for switchable outputs, zone bypass switches and service actions (and for alarm panels if enabled below).",
+          "use_code_for_panels": "Arm and disarm without entering a code in Home Assistant. Anyone with access to Home Assistant can then disarm the alarm.",
+          "all_partitions_panel": "One alarm panel that arms/disarms all selected partitions with a single command.",
+          "all_partitions": "Leave empty to use all configured partitions.",
+          "event_log_interval": "How often the panel event log is checked for new events (0 disables the event entity and satel_integra_event events).",
+          "all_arm_modes": "Arm away = mode 0 (full), arm custom bypass = mode 1 (full + bypasses), arm home = mode 2 (no interior zones), arm night = mode 3 (no interior zones, no entry delay). When off: arm away = mode 0 and arm home = the mode configured for the partition."
+        }
+      }
+    },
+    "error": {
+      "invalid_code_format": "The code must contain 4 to 16 digits.",
+      "code_required": "Enter the code to use it for the alarm panels."
+    }
+  },
+  "selector": {
+    "arm_home_mode": {
+      "options": {
+        "1": "1 - Full arming + bypasses",
+        "2": "2 - No interior zones",
+        "3": "3 - No interior zones or entry delay"
+      }
+    },
+    "set_outputs_state": {
+      "options": {
+        "on": "On",
+        "off": "Off",
+        "toggle": "Toggle"
+      }
+    },
+    "arm_mode": {
+      "options": {
+        "0": "0 - Full arming",
+        "1": "1 - Full arming + bypasses",
+        "2": "2 - No interior zones",
+        "3": "3 - No interior zones or entry delay"
+      }
+    }
+  },
+  "entity": {
+    "alarm_control_panel": {
+      "all_partitions": {
+        "name": "All partitions"
+      },
+      "partition": {
+        "state": {
+          "armed_away": "Full arming (mode 0)",
+          "armed_custom_bypass": "Full arming + bypasses (mode 1)",
+          "armed_home": "No interior zones (mode 2)",
+          "armed_night": "No interior zones, no entry delay (mode 3)"
+        }
+      },
+      "all_partitions_modes": {
+        "name": "All partitions",
+        "state": {
+          "armed_away": "Full arming (mode 0)",
+          "armed_custom_bypass": "Full arming + bypasses (mode 1)",
+          "armed_home": "No interior zones (mode 2)",
+          "armed_night": "No interior zones, no entry delay (mode 3)"
+        }
+      }
+    },
+    "binary_sensor": {
+      "zone_tamper": {
+        "name": "Tamper"
+      },
+      "zone_alarm": {
+        "name": "Alarm"
+      },
+      "zone_alarm_memory": {
+        "name": "Alarm memory"
+      },
+      "zone_tamper_alarm": {
+        "name": "Tamper alarm"
+      },
+      "zone_isolated": {
+        "name": "Isolated"
+      },
+      "zone_masked": {
+        "name": "Masked"
+      },
+      "zone_no_violation_trouble": {
+        "name": "No violation trouble"
+      },
+      "zone_long_violation_trouble": {
+        "name": "Long violation trouble"
+      },
+      "partition_violated_zones": {
+        "name": "Violated zones"
+      },
+      "partition_alarm_memory": {
+        "name": "Alarm memory"
+      },
+      "partition_fire_alarm_memory": {
+        "name": "Fire alarm memory"
+      },
+      "partition_temporary_blocked": {
+        "name": "Temporarily blocked"
+      },
+      "partition_first_code_entered": {
+        "name": "First code entered"
+      },
+      "partition_verified_alarm": {
+        "name": "Verified alarm"
+      },
+      "partition_warning_alarm": {
+        "name": "Warning alarm"
+      },
+      "service_mode": {
+        "name": "Service mode"
+      },
+      "system_trouble": {
+        "name": "System trouble"
+      },
+      "troubles_memory": {
+        "name": "Troubles memory"
+      },
+      "panel_ac_trouble": {
+        "name": "AC power trouble"
+      },
+      "panel_battery_trouble": {
+        "name": "Battery trouble"
+      },
+      "panel_battery_missing_trouble": {
+        "name": "Battery missing"
+      },
+      "output_trouble": {
+        "name": "Output {number} trouble"
+      },
+      "keypad_power_supply_trouble": {
+        "name": "Keypad power supply trouble"
+      },
+      "expander_power_supply_trouble": {
+        "name": "Expander power supply trouble"
+      },
+      "dt1_trouble": {
+        "name": "DT1 trouble"
+      },
+      "dt2_trouble": {
+        "name": "DT2 trouble"
+      },
+      "dtm_trouble": {
+        "name": "DTM trouble"
+      },
+      "rtc_trouble": {
+        "name": "Clock trouble"
+      },
+      "monitoring_station_trouble": {
+        "name": "Monitoring station {number} trouble"
+      },
+      "eeprom_or_rtc_access_trouble": {
+        "name": "EEPROM/RTC access trouble"
+      },
+      "ram_trouble": {
+        "name": "RAM trouble"
+      },
+      "panel_restart_memory_trouble": {
+        "name": "Panel restart memory"
+      }
+    },
+    "switch": {
+      "zone_bypass": {
+        "name": "Bypass"
+      }
+    },
+    "event": {
+      "event_log": {
+        "name": "Event log",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "zone_alarm": "Zone and tamper alarms",
+              "partition_alarm": "Partition and expander alarms",
+              "arming": "Arming, disarming, alarm clearing",
+              "bypass": "Zone bypasses",
+              "access_control": "Access control",
+              "trouble": "Troubles",
+              "user_function": "User functions",
+              "system": "System events"
+            }
+          }
+        }
+      }
+    }
+  },
+  "services": {
+    "arm": {
+      "name": "Arm partitions",
+      "description": "Arms several partitions with one command, optionally forced.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Panel",
+          "description": "Satel Integra entry (optional if only one)."
+        },
+        "partitions": {
+          "name": "Partitions",
+          "description": "Partition numbers (default: all configured)."
+        },
+        "mode": {
+          "name": "Mode",
+          "description": "Arming mode 0-3."
+        },
+        "force": {
+          "name": "Force",
+          "description": "Force arming despite violated zones/troubles."
+        },
+        "no_bypass": {
+          "name": "Without bypasses and exit delay",
+          "description": "Requires INT-RS Plus / ETHM-1 Plus 2.19+."
+        },
+        "code": {
+          "name": "Code",
+          "description": "User code (default: the code stored in the options)."
+        }
+      }
+    },
+    "disarm": {
+      "name": "Disarm partitions",
+      "description": "Disarms several partitions with one command.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Panel",
+          "description": "Satel Integra entry (optional if only one)."
+        },
+        "partitions": {
+          "name": "Partitions",
+          "description": "Partition numbers (default: all configured)."
+        },
+        "clear_alarm": {
+          "name": "Clear alarm",
+          "description": "Also clear the alarm."
+        },
+        "code": {
+          "name": "Code",
+          "description": "User code (default: the code stored in the options)."
+        }
+      }
+    },
+    "clear_alarm": {
+      "name": "Clear alarm",
+      "description": "Clears the alarm in partitions.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Panel",
+          "description": "Satel Integra entry (optional if only one)."
+        },
+        "partitions": {
+          "name": "Partitions",
+          "description": "Partition numbers (default: all configured)."
+        },
+        "code": {
+          "name": "Code",
+          "description": "User code (default: the code stored in the options)."
+        }
+      }
+    },
+    "bypass_zones": {
+      "name": "Bypass zones",
+      "description": "Bypasses (or isolates) zones.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Panel",
+          "description": "Satel Integra entry (optional if only one)."
+        },
+        "zones": {
+          "name": "Zones",
+          "description": "Zone numbers."
+        },
+        "isolate": {
+          "name": "Isolate",
+          "description": "Isolate instead of bypass (stays until unbypassed)."
+        },
+        "code": {
+          "name": "Code",
+          "description": "User code (default: the code stored in the options)."
+        }
+      }
+    },
+    "unbypass_zones": {
+      "name": "Unbypass zones",
+      "description": "Removes the bypass/isolation of zones.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Panel",
+          "description": "Satel Integra entry (optional if only one)."
+        },
+        "zones": {
+          "name": "Zones",
+          "description": "Zone numbers."
+        },
+        "code": {
+          "name": "Code",
+          "description": "User code (default: the code stored in the options)."
+        }
+      }
+    },
+    "set_outputs": {
+      "name": "Set outputs",
+      "description": "Switches several outputs with one command.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Panel",
+          "description": "Satel Integra entry (optional if only one)."
+        },
+        "outputs": {
+          "name": "Outputs",
+          "description": "Output numbers."
+        },
+        "state": {
+          "name": "State",
+          "description": "on, off or toggle."
+        },
+        "code": {
+          "name": "Code",
+          "description": "User code (default: the code stored in the options)."
+        }
+      }
+    },
+    "clear_trouble_memory": {
+      "name": "Clear trouble memory",
+      "description": "Clears the trouble memory of the panel.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Panel",
+          "description": "Satel Integra entry (optional if only one)."
+        },
+        "code": {
+          "name": "Code",
+          "description": "User code (default: the code stored in the options)."
+        }
+      }
+    },
+    "read_event_log": {
+      "name": "Read event log",
+      "description": "Returns the newest events of the panel event log.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Panel",
+          "description": "Satel Integra entry (optional if only one)."
+        },
+        "count": {
+          "name": "Count",
+          "description": "Number of events (1-200)."
+        }
+      }
+    }
+  }
+}

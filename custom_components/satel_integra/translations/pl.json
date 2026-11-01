@@ -1,0 +1,610 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Urządzenie jest już skonfigurowane"
+    },
+    "error": {
+      "cannot_connect": "Nie udało się połączyć",
+      "connection_initialization_failed": "Połączono, ale nie udało się odczytać danych z centrali. Jeśli centrala wymaga szyfrowania, sprawdź klucz integracji.",
+      "panel_busy": "Połączono, ale centrala zgłasza zajętość (Busy). Sprawdź, czy nie ma innego aktywnego połączenia z modułem.",
+      "unknown": "Nieoczekiwany błąd"
+    },
+    "step": {
+      "code": {
+        "data": {
+          "code": "Kod użytkownika"
+        },
+        "data_description": {
+          "code": "Kod do sterowania wyjściami"
+        }
+      },
+      "reconfigure": {
+        "data": {
+          "encryption_key": "Klucz szyfrowania integracji",
+          "host": "Host",
+          "port": "Port"
+        },
+        "data_description": {
+          "encryption_key": "Jeśli centrala wymaga szyfrowania, wpisz tutaj klucz integracji.",
+          "host": "Adres IP modułu ETHM",
+          "port": "Port integracji modułu ETHM"
+        }
+      },
+      "user": {
+        "data": {
+          "encryption_key": "Klucz szyfrowania integracji",
+          "host": "Host",
+          "port": "Port"
+        },
+        "data_description": {
+          "encryption_key": "Jeśli centrala wymaga szyfrowania, wpisz tutaj klucz integracji.",
+          "host": "Adres IP modułu ETHM",
+          "port": "Port integracji modułu ETHM"
+        }
+      }
+    }
+  },
+  "config_subentries": {
+    "output": {
+      "entry_type": "Wyjście",
+      "error": {
+        "already_configured": "Urządzenie jest już skonfigurowane"
+      },
+      "initiate_flow": {
+        "user": "Dodaj wyjście"
+      },
+      "step": {
+        "reconfigure": {
+          "data": {
+            "name": "Nazwa",
+            "type": "Typ wyjścia"
+          },
+          "data_description": {
+            "name": "Nazwa czujnika",
+            "type": "Klasa urządzenia, jaką ma mieć czujnik"
+          },
+          "title": "Zmień konfigurację wyjścia {output_number}"
+        },
+        "user": {
+          "data": {
+            "name": "Nazwa",
+            "output_number": "Numer wyjścia",
+            "type": "Typ wyjścia"
+          },
+          "data_description": {
+            "name": "Nazwa czujnika",
+            "output_number": "Numer wyjścia w centrali",
+            "type": "Klasa urządzenia, jaką ma mieć czujnik"
+          },
+          "title": "Konfiguracja wyjścia"
+        }
+      }
+    },
+    "partition": {
+      "entry_type": "Strefa",
+      "error": {
+        "already_configured": "Urządzenie jest już skonfigurowane"
+      },
+      "initiate_flow": {
+        "user": "Dodaj strefę"
+      },
+      "step": {
+        "reconfigure": {
+          "data": {
+            "arm_home_mode": "Tryb czuwania „w domu”",
+            "name": "Nazwa"
+          },
+          "data_description": {
+            "arm_home_mode": "Tryb czuwania używany dla „uzbrój w domu”:\nTryb 1 – czuwanie pełne + blokady (blokowane są wejścia z opcją „Blokowane, gdy brak wyjścia”).\nTryb 2 – czuwanie bez wewnętrznych.\nTryb 3 – jak tryb 2, ale bez czasu na wejście (wejścia opóźnione działają natychmiast).\nUżywany tylko wtedy, gdy w opcjach integracji wyłączono „Wszystkie tryby czuwania Satel w panelach”."
+          },
+          "title": "Zmień konfigurację strefy {partition_number}"
+        },
+        "user": {
+          "data": {
+            "arm_home_mode": "Tryb czuwania „w domu”",
+            "name": "Nazwa",
+            "partition_number": "Numer strefy"
+          },
+          "data_description": {
+            "arm_home_mode": "Tryb czuwania używany dla „uzbrój w domu”:\nTryb 1 – czuwanie pełne + blokady (blokowane są wejścia z opcją „Blokowane, gdy brak wyjścia”).\nTryb 2 – czuwanie bez wewnętrznych.\nTryb 3 – jak tryb 2, ale bez czasu na wejście (wejścia opóźnione działają natychmiast).\nUżywany tylko wtedy, gdy w opcjach integracji wyłączono „Wszystkie tryby czuwania Satel w panelach”.",
+            "name": "Nazwa panelu alarmowego",
+            "partition_number": "Numer strefy w centrali"
+          },
+          "title": "Konfiguracja strefy"
+        }
+      }
+    },
+    "switchable_output": {
+      "entry_type": "Wyjście sterowalne",
+      "error": {
+        "already_configured": "Urządzenie jest już skonfigurowane"
+      },
+      "initiate_flow": {
+        "user": "Dodaj wyjście sterowalne"
+      },
+      "step": {
+        "reconfigure": {
+          "data": {
+            "name": "Nazwa"
+          },
+          "data_description": {
+            "name": "Nazwa przełącznika"
+          },
+          "title": "Zmień konfigurację wyjścia sterowalnego {switchable_output_number}"
+        },
+        "user": {
+          "data": {
+            "name": "Nazwa",
+            "switchable_output_number": "Numer wyjścia sterowalnego"
+          },
+          "data_description": {
+            "name": "Nazwa przełącznika",
+            "switchable_output_number": "Numer wyjścia w centrali"
+          },
+          "title": "Konfiguracja wyjścia sterowalnego"
+        }
+      }
+    },
+    "zone": {
+      "abort": {
+        "entry_not_loaded": "Nie można sprawdzić odczytu temperatury, gdy integracja jest wyłączona."
+      },
+      "entry_type": "Wejście",
+      "error": {
+        "already_configured": "Urządzenie jest już skonfigurowane",
+        "zone_does_not_report_temperature": "To wejście nie podaje temperatury."
+      },
+      "initiate_flow": {
+        "user": "Dodaj wejście"
+      },
+      "step": {
+        "reconfigure": {
+          "data": {
+            "enable_temperature_sensor": "Czujnik temperatury",
+            "name": "Nazwa",
+            "type": "Typ wejścia"
+          },
+          "data_description": {
+            "enable_temperature_sensor": "Włącz, jeśli wejście podaje też temperaturę",
+            "name": "Nazwa czujnika",
+            "type": "Klasa urządzenia, jaką ma mieć czujnik"
+          },
+          "title": "Zmień konfigurację wejścia {zone_number}"
+        },
+        "user": {
+          "data": {
+            "enable_temperature_sensor": "Czujnik temperatury",
+            "name": "Nazwa",
+            "type": "Typ wejścia",
+            "zone_number": "Numer wejścia"
+          },
+          "data_description": {
+            "enable_temperature_sensor": "Włącz, jeśli wejście podaje też temperaturę",
+            "name": "Nazwa czujnika",
+            "type": "Klasa urządzenia, jaką ma mieć czujnik",
+            "zone_number": "Numer wejścia w centrali"
+          },
+          "title": "Konfiguracja wejścia"
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Nie udało się połączyć"
+    },
+    "connection_initialization_failed": {
+      "message": "Połączono, ale nie udało się odczytać danych z centrali. Jeśli centrala wymaga szyfrowania, sprawdź klucz integracji."
+    },
+    "missing_alarm_access_code": {
+      "message": "Nie podano kodu użytkownika, a w opcjach integracji nie ma zapisanego kodu."
+    },
+    "missing_output_access_code": {
+      "message": "Brak kodu użytkownika w opcjach integracji. Wpisz kod w opcjach, aby sterować wyjściami i blokadami wejść."
+    },
+    "monitoring_start_failed": {
+      "message": "Połączono z centralą, ale nie potwierdziła ona włączenia monitorowania stanu."
+    },
+    "panel_busy": {
+      "message": "Połączono, ale centrala zgłasza zajętość (Busy). Sprawdź, czy nie ma innego aktywnego połączenia z modułem."
+    },
+    "invalid_code_format": {
+      "message": "Kod musi mieć od 4 do 16 cyfr."
+    },
+    "command_rejected_wrong_code": {
+      "message": "Centrala odrzuciła polecenie: nieprawidłowy kod."
+    },
+    "command_rejected_no_access": {
+      "message": "Centrala odrzuciła polecenie: brak uprawnień do wybranych stref/wejść."
+    },
+    "command_rejected_can_force": {
+      "message": "Centrala nie może załączyć czuwania (np. naruszone wejścia), ale możliwe jest wymuszenie załączenia."
+    },
+    "command_rejected_cannot_arm": {
+      "message": "Centrala nie może załączyć czuwania w wybranych strefach."
+    },
+    "command_rejected": {
+      "message": "Centrala odrzuciła polecenie (kod wyniku {code})."
+    },
+    "not_connected": {
+      "message": "Brak połączenia z centralą – polecenie nie zostało wysłane."
+    },
+    "no_response": {
+      "message": "Centrala nie odpowiedziała na polecenie. Sprawdź stan przed ponowieniem."
+    },
+    "invalid_command": {
+      "message": "Nieprawidłowe polecenie: {error}"
+    },
+    "command_failed": {
+      "message": "Polecenie nie powiodło się: {error}"
+    },
+    "config_entry_required": {
+      "message": "Wybierz centralę Satel Integra (załadowano więcej niż jedną albo żadnej)."
+    },
+    "config_entry_not_loaded": {
+      "message": "Wybrana centrala Satel Integra nie jest załadowana."
+    },
+    "no_bypass_unsupported": {
+      "message": "Moduł nie obsługuje czuwania bez blokad (wymaga INT-RS Plus / ETHM-1 Plus 2.19 lub nowszego)."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opcje Satel Integra",
+        "data": {
+          "code": "Kod użytkownika",
+          "use_code_for_panels": "Używaj zapisanego kodu w panelach alarmowych",
+          "all_partitions_panel": "Utwórz panel „Wszystkie strefy”",
+          "all_partitions": "Strefy sterowane panelem „Wszystkie strefy”",
+          "event_log_interval": "Odpytywanie dziennika zdarzeń",
+          "all_arm_modes": "Wszystkie tryby czuwania Satel w panelach"
+        },
+        "data_description": {
+          "code": "Kod używany do sterowania wyjściami, blokadami wejść i w akcjach (oraz w panelach alarmowych, jeśli włączysz to niżej).",
+          "use_code_for_panels": "Załączanie i wyłączanie czuwania bez wpisywania kodu. Uwaga: każdy z dostępem do Home Assistant będzie mógł wyłączyć alarm.",
+          "all_partitions_panel": "Jeden panel, który jednym poleceniem załącza/wyłącza czuwanie we wszystkich wybranych strefach.",
+          "all_partitions": "Pozostaw puste, aby użyć wszystkich skonfigurowanych stref.",
+          "event_log_interval": "Co ile sekund sprawdzać dziennik zdarzeń centrali (0 wyłącza encję zdarzeń i zdarzenia satel_integra_event).",
+          "all_arm_modes": "Uzbrój poza domem = tryb 0 (czuwanie pełne), uzbrój niestandardowo = tryb 1 (pełne + blokady), uzbrój w domu = tryb 2 (bez wewnętrznych), uzbrój na noc = tryb 3 (bez wewnętrznych i bez opóźnień). Po wyłączeniu: poza domem = tryb 0, w domu = tryb ustawiony dla strefy."
+        }
+      }
+    },
+    "error": {
+      "invalid_code_format": "Kod musi mieć od 4 do 16 cyfr.",
+      "code_required": "Wpisz kod, aby używać go w panelach alarmowych."
+    }
+  },
+  "selector": {
+    "arm_home_mode": {
+      "options": {
+        "1": "1 – Czuwanie pełne + blokady",
+        "2": "2 – Czuwanie bez wewnętrznych",
+        "3": "3 – Bez wewnętrznych i bez czasu na wejście"
+      }
+    },
+    "set_outputs_state": {
+      "options": {
+        "on": "Włącz",
+        "off": "Wyłącz",
+        "toggle": "Przełącz"
+      }
+    },
+    "arm_mode": {
+      "options": {
+        "0": "0 – Czuwanie pełne",
+        "1": "1 – Czuwanie pełne + blokady",
+        "2": "2 – Czuwanie bez wewnętrznych",
+        "3": "3 – Bez wewnętrznych i bez czasu na wejście"
+      }
+    }
+  },
+  "entity": {
+    "alarm_control_panel": {
+      "all_partitions": {
+        "name": "Wszystkie strefy"
+      },
+      "partition": {
+        "state": {
+          "armed_away": "Czuwanie pełne",
+          "armed_custom_bypass": "Czuwanie pełne + blokady",
+          "armed_home": "Czuwanie bez wewnętrznych",
+          "armed_night": "Bez wewnętrznych, bez opóźnień"
+        }
+      },
+      "all_partitions_modes": {
+        "name": "Wszystkie strefy",
+        "state": {
+          "armed_away": "Czuwanie pełne",
+          "armed_custom_bypass": "Czuwanie pełne + blokady",
+          "armed_home": "Czuwanie bez wewnętrznych",
+          "armed_night": "Bez wewnętrznych, bez opóźnień"
+        }
+      }
+    },
+    "binary_sensor": {
+      "zone_tamper": {
+        "name": "Sabotaż"
+      },
+      "zone_alarm": {
+        "name": "Alarm"
+      },
+      "zone_alarm_memory": {
+        "name": "Pamięć alarmu"
+      },
+      "zone_tamper_alarm": {
+        "name": "Alarm sabotażowy"
+      },
+      "zone_isolated": {
+        "name": "Izolacja"
+      },
+      "zone_masked": {
+        "name": "Maskowanie"
+      },
+      "zone_no_violation_trouble": {
+        "name": "Awaria – brak naruszenia"
+      },
+      "zone_long_violation_trouble": {
+        "name": "Awaria – długie naruszenie"
+      },
+      "partition_violated_zones": {
+        "name": "Naruszone wejścia"
+      },
+      "partition_alarm_memory": {
+        "name": "Pamięć alarmu"
+      },
+      "partition_fire_alarm_memory": {
+        "name": "Pamięć alarmu pożarowego"
+      },
+      "partition_temporary_blocked": {
+        "name": "Czasowo zablokowana"
+      },
+      "partition_first_code_entered": {
+        "name": "Wprowadzony pierwszy kod"
+      },
+      "partition_verified_alarm": {
+        "name": "Alarm zweryfikowany"
+      },
+      "partition_warning_alarm": {
+        "name": "Alarm ostrzegawczy"
+      },
+      "service_mode": {
+        "name": "Tryb serwisowy"
+      },
+      "system_trouble": {
+        "name": "Awaria systemu"
+      },
+      "troubles_memory": {
+        "name": "Pamięć awarii"
+      },
+      "panel_ac_trouble": {
+        "name": "Awaria zasilania AC"
+      },
+      "panel_battery_trouble": {
+        "name": "Awaria akumulatora"
+      },
+      "panel_battery_missing_trouble": {
+        "name": "Brak akumulatora"
+      },
+      "output_trouble": {
+        "name": "Awaria wyjścia OUT{number}"
+      },
+      "keypad_power_supply_trouble": {
+        "name": "Awaria zasilania manipulatorów (+KPD)"
+      },
+      "expander_power_supply_trouble": {
+        "name": "Awaria zasilania ekspanderów (+EX)"
+      },
+      "dt1_trouble": {
+        "name": "Awaria magistrali DT1"
+      },
+      "dt2_trouble": {
+        "name": "Awaria magistrali DT2"
+      },
+      "dtm_trouble": {
+        "name": "Awaria magistrali DTM"
+      },
+      "rtc_trouble": {
+        "name": "Awaria zegara"
+      },
+      "monitoring_station_trouble": {
+        "name": "Awaria monitoringu do stacji {number}"
+      },
+      "eeprom_or_rtc_access_trouble": {
+        "name": "Awaria EEPROM/RTC"
+      },
+      "ram_trouble": {
+        "name": "Awaria pamięci RAM"
+      },
+      "panel_restart_memory_trouble": {
+        "name": "Pamięć restartu centrali"
+      }
+    },
+    "switch": {
+      "zone_bypass": {
+        "name": "Blokada"
+      }
+    },
+    "event": {
+      "event_log": {
+        "name": "Dziennik zdarzeń",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "zone_alarm": "Alarmy z wejść i sabotaże",
+              "partition_alarm": "Alarmy stref i modułów",
+              "arming": "Załączenia/wyłączenia czuwania, kasowanie alarmów",
+              "bypass": "Blokady wejść",
+              "access_control": "Kontrola dostępu",
+              "trouble": "Awarie",
+              "user_function": "Funkcje użytkownika",
+              "system": "Zdarzenia systemowe"
+            }
+          }
+        }
+      }
+    }
+  },
+  "services": {
+    "arm": {
+      "name": "Załącz czuwanie",
+      "description": "Załącza czuwanie w kilku strefach jednym poleceniem, opcjonalnie z wymuszeniem.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Centrala",
+          "description": "Centrala Satel Integra (opcjonalnie, jeśli jest jedna)."
+        },
+        "partitions": {
+          "name": "Strefy",
+          "description": "Numery stref (domyślnie wszystkie skonfigurowane)."
+        },
+        "mode": {
+          "name": "Tryb",
+          "description": "Tryb czuwania 0–3."
+        },
+        "force": {
+          "name": "Wymuś",
+          "description": "Wymuś załączenie mimo naruszonych wejść/awarii."
+        },
+        "no_bypass": {
+          "name": "Bez blokad i bez czasu na wyjście",
+          "description": "Wymaga INT-RS Plus / ETHM-1 Plus 2.19+."
+        },
+        "code": {
+          "name": "Kod",
+          "description": "Kod użytkownika (domyślnie kod zapisany w opcjach)."
+        }
+      }
+    },
+    "disarm": {
+      "name": "Wyłącz czuwanie",
+      "description": "Wyłącza czuwanie w kilku strefach jednym poleceniem.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Centrala",
+          "description": "Centrala Satel Integra (opcjonalnie, jeśli jest jedna)."
+        },
+        "partitions": {
+          "name": "Strefy",
+          "description": "Numery stref (domyślnie wszystkie skonfigurowane)."
+        },
+        "clear_alarm": {
+          "name": "Skasuj alarm",
+          "description": "Skasuj także alarm."
+        },
+        "code": {
+          "name": "Kod",
+          "description": "Kod użytkownika (domyślnie kod zapisany w opcjach)."
+        }
+      }
+    },
+    "clear_alarm": {
+      "name": "Skasuj alarm",
+      "description": "Kasuje alarm w strefach.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Centrala",
+          "description": "Centrala Satel Integra (opcjonalnie, jeśli jest jedna)."
+        },
+        "partitions": {
+          "name": "Strefy",
+          "description": "Numery stref (domyślnie wszystkie skonfigurowane)."
+        },
+        "code": {
+          "name": "Kod",
+          "description": "Kod użytkownika (domyślnie kod zapisany w opcjach)."
+        }
+      }
+    },
+    "bypass_zones": {
+      "name": "Zablokuj wejścia",
+      "description": "Blokuje (lub izoluje) wejścia.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Centrala",
+          "description": "Centrala Satel Integra (opcjonalnie, jeśli jest jedna)."
+        },
+        "zones": {
+          "name": "Wejścia",
+          "description": "Numery wejść."
+        },
+        "isolate": {
+          "name": "Izoluj",
+          "description": "Izolacja zamiast blokady (trwa do odblokowania)."
+        },
+        "code": {
+          "name": "Kod",
+          "description": "Kod użytkownika (domyślnie kod zapisany w opcjach)."
+        }
+      }
+    },
+    "unbypass_zones": {
+      "name": "Odblokuj wejścia",
+      "description": "Zdejmuje blokadę/izolację wejść.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Centrala",
+          "description": "Centrala Satel Integra (opcjonalnie, jeśli jest jedna)."
+        },
+        "zones": {
+          "name": "Wejścia",
+          "description": "Numery wejść."
+        },
+        "code": {
+          "name": "Kod",
+          "description": "Kod użytkownika (domyślnie kod zapisany w opcjach)."
+        }
+      }
+    },
+    "set_outputs": {
+      "name": "Steruj wyjściami",
+      "description": "Przełącza kilka wyjść jednym poleceniem.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Centrala",
+          "description": "Centrala Satel Integra (opcjonalnie, jeśli jest jedna)."
+        },
+        "outputs": {
+          "name": "Wyjścia",
+          "description": "Numery wyjść."
+        },
+        "state": {
+          "name": "Stan",
+          "description": "Włącz, wyłącz lub przełącz."
+        },
+        "code": {
+          "name": "Kod",
+          "description": "Kod użytkownika (domyślnie kod zapisany w opcjach)."
+        }
+      }
+    },
+    "clear_trouble_memory": {
+      "name": "Skasuj pamięć awarii",
+      "description": "Kasuje pamięć awarii w centrali.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Centrala",
+          "description": "Centrala Satel Integra (opcjonalnie, jeśli jest jedna)."
+        },
+        "code": {
+          "name": "Kod",
+          "description": "Kod użytkownika (domyślnie kod zapisany w opcjach)."
+        }
+      }
+    },
+    "read_event_log": {
+      "name": "Odczytaj dziennik zdarzeń",
+      "description": "Zwraca najnowsze zdarzenia z dziennika centrali.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Centrala",
+          "description": "Centrala Satel Integra (opcjonalnie, jeśli jest jedna)."
+        },
+        "count": {
+          "name": "Liczba",
+          "description": "Liczba zdarzeń (1–200)."
+        }
+      }
+    }
+  }
+}

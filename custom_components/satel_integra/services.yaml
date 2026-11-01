@@ -1,0 +1,164 @@
+arm:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: satel_integra
+    partitions:
+      example:
+      - 1
+      - 2
+      selector:
+        object: {}
+    mode:
+      default: '0'
+      selector:
+        select:
+          translation_key: arm_mode
+          options:
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+    force:
+      default: false
+      selector:
+        boolean: null
+    no_bypass:
+      default: false
+      selector:
+        boolean: null
+    code:
+      example: '1234'
+      selector:
+        text:
+          type: password
+disarm:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: satel_integra
+    partitions:
+      example:
+      - 1
+      - 2
+      selector:
+        object: {}
+    clear_alarm:
+      default: false
+      selector:
+        boolean: null
+    code:
+      example: '1234'
+      selector:
+        text:
+          type: password
+clear_alarm:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: satel_integra
+    partitions:
+      example:
+      - 1
+      - 2
+      selector:
+        object: {}
+    code:
+      example: '1234'
+      selector:
+        text:
+          type: password
+bypass_zones:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: satel_integra
+    zones:
+      required: true
+      example:
+      - 3
+      - 7
+      selector:
+        object: {}
+    isolate:
+      default: false
+      selector:
+        boolean: null
+    code:
+      example: '1234'
+      selector:
+        text:
+          type: password
+unbypass_zones:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: satel_integra
+    zones:
+      required: true
+      example:
+      - 3
+      - 7
+      selector:
+        object: {}
+    code:
+      example: '1234'
+      selector:
+        text:
+          type: password
+set_outputs:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: satel_integra
+    outputs:
+      required: true
+      example:
+      - 3
+      - 5
+      selector:
+        object: {}
+    state:
+      required: true
+      selector:
+        select:
+          translation_key: set_outputs_state
+          options:
+          - 'on'
+          - 'off'
+          - toggle
+    code:
+      example: '1234'
+      selector:
+        text:
+          type: password
+clear_trouble_memory:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: satel_integra
+    code:
+      example: '1234'
+      selector:
+        text:
+          type: password
+read_event_log:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: satel_integra
+    count:
+      default: 20
+      selector:
+        number:
+          min: 1
+          max: 200
+          mode: box
