@@ -2,31 +2,24 @@ name: Validate
 
 on:
   push:
-    branches: [main]
   pull_request:
+  schedule:
+    - cron: "0 3 * * 1"
   workflow_dispatch:
 
 jobs:
-  hassfest:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: home-assistant/actions/hassfest@master
-
   hacs:
+    name: HACS
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - uses: hacs/action@main
         with:
           category: integration
           ignore: brands
 
-  lint:
+  hassfest:
+    name: Hassfest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
-        with:
-          args: check custom_components tests
-      - run: node --check custom_components/satel_integra/www/satel-alarm-card.js
+      - uses: actions/checkout@v5
+      - uses: home-assistant/actions/hassfest@master

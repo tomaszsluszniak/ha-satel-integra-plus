@@ -55,7 +55,7 @@ PLATFORMS = [
 CONFIG_SCHEMA = cv.removed(DOMAIN, raise_if_present=False)
 
 
-CARD_URL = f"/{DOMAIN}/satel-alarm-card.js"
+CARD_URL = f"/{DOMAIN}/satel-integra-alarm-card.js"
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
@@ -73,7 +73,7 @@ async def _async_register_card(hass: HomeAssistant) -> None:
             [
                 StaticPathConfig(
                     CARD_URL,
-                    str(Path(__file__).parent / "www" / "satel-alarm-card.js"),
+                    str(Path(__file__).parent / "www" / "satel-integra-alarm-card.js"),
                     cache_headers=False,
                 )
             ]

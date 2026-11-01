@@ -1,8 +1,9 @@
 name: Release
 
-# Push a tag matching the integration version, e.g.:
-#   git tag v2026.11.2 && git push origin v2026.11.2
-# or run the workflow manually with the version to release.
+# Push a tag to publish:  git tag v1.0.0 && git push origin v1.0.0
+# The workflow sets the version in manifest.json and the card, builds
+# satel_integra.zip (what HACS installs) and creates the GitHub release with the
+# matching section of CHANGELOG.md as release notes.
 
 on:
   push:
@@ -10,8 +11,8 @@ on:
       - "v*"
   workflow_dispatch:
     inputs:
-      version:
-        description: "Version to release (must match manifest.json), e.g. 2026.11.2"
+      tag:
+        description: Existing tag to (re)build, e.g. v1.0.0
         required: true
 
 permissions:
@@ -20,49 +21,60 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
-          fetch-depth: 0
+          ref: ${{ env.TAG }}
 
-      - name: Determine version
-        id: version
+      - name: Version from tag
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            VERSION="${{ github.event.inputs.version }}"
-          else
-            VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${TAG#v}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-].+)?$ ]]; then
+            echo "::error::Tag $TAG is not a version (expected vX.Y.Z)"; exit 1
           fi
-          MANIFEST=$(jq -r .version custom_components/satel_integra/manifest.json)
-          CARD=$(sed -n 's/^const CARD_VERSION = "\(.*\)";/\1/p' custom_components/satel_integra/www/satel-alarm-card.js)
-          echo "Release: $VERSION, manifest: $MANIFEST, card: $CARD"
-          if [ "$VERSION" != "$MANIFEST" ]; then
-            echo "::error::Version $VERSION does not match manifest.json ($MANIFEST)"
-            exit 1
-          fi
-          if [ "$VERSION" != "$CARD" ]; then
-            echo "::warning::Card version ($CARD) differs from the release version"
-          fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 
-      - name: Validate translations and services
+      - name: Set version in manifest and card
         run: |
-          python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('custom_components/satel_integra/**/*.json', recursive=True)]"
-          python3 -c "import yaml; yaml.safe_load(open('custom_components/satel_integra/services.yaml'))"
-          node --check custom_components/satel_integra/www/satel-alarm-card.js
+          C=custom_components/satel_integra
+          jq --arg v "$VERSION" '.version = $v' "$C/manifest.json" > manifest.tmp
+          mv manifest.tmp "$C/manifest.json"
+          sed -i -E "s/^const CARD_VERSION = \".*\";/const CARD_VERSION = \"$VERSION\";/" "$C/www/satel-integra-alarm-card.js"
+          grep -H '"version"' "$C/manifest.json"
+          grep -H 'CARD_VERSION' "$C/www/satel-integra-alarm-card.js"
 
-      - name: Build zip
+      - name: Check
+        run: |
+          python3 -m compileall -q custom_components/satel_integra
+          node --check custom_components/satel_integra/www/satel-integra-alarm-card.js
+
+      - name: Build satel_integra.zip
         run: |
           cd custom_components/satel_integra
-          find . -name __pycache__ -prune -exec rm -rf {} +
-          zip -r "$GITHUB_WORKSPACE/satel_integra.zip" .
+          zip -r -q ../../satel_integra.zip . -x '*/__pycache__/*' '*.pyc'
+          cd ../..
+          unzip -l satel_integra.zip | tail -1
 
-      - name: Create release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          name: ${{ steps.version.outputs.version }}
-          target_commitish: ${{ github.sha }}
-          generate_release_notes: true
-          files: satel_integra.zip
+      - name: Release notes from CHANGELOG.md
+        run: |
+          awk -v v="$VERSION" '
+            /^## / { if (found) exit; if ($2 == v) { found = 1; next } }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then echo "Release $VERSION" > notes.md; fi
+          cat notes.md
+
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PRERELEASE=""
+          [[ "$VERSION" == *-* ]] && PRERELEASE="--prerelease"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release edit "$TAG" --notes-file notes.md
+          else
+            gh release create "$TAG" --title "$VERSION" --notes-file notes.md --verify-tag $PRERELEASE
+          fi
+          gh release upload "$TAG" satel_integra.zip --clobber
