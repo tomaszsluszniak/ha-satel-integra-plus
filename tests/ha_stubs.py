@@ -285,6 +285,8 @@ def install() -> None:
     _mod("homeassistant.components.frontend", add_extra_js_url=lambda hass, url: None)
     _mod("homeassistant.components.http", StaticPathConfig=_Anything)
     _mod("homeassistant.loader", async_get_integration=None)
+    _mod("homeassistant.components.lovelace")
+    _mod("homeassistant.components.lovelace.const", LOVELACE_DATA="lovelace")
     _mod("homeassistant.components.diagnostics", async_redact_data=lambda d, k: d)
     _mod(
         "homeassistant.config_entries",

@@ -98,7 +98,8 @@ restartu. Encja zdarzeń *Dziennik zdarzeń*.
 
 ## Karta Lovelace
 
-Integracja dostarcza kartę i sama ładuje ją na wszystkich dashboardach – nie trzeba dodawać zasobu.
+Integracja dostarcza kartę i sama dodaje ją do zasobów Lovelace, a przy zasobach w trybie YAML
+ładuje ją skryptem. Nie trzeba niczego dodawać ręcznie.
 
 ```yaml
 type: custom:satel-integra-alarm-card

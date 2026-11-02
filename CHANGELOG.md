@@ -3,6 +3,15 @@
 Nagłówek każdej sekcji to numer wersji bez `v`. Workflow Release pobiera stąd opis wydania dla
 tagu `vX.Y.Z`, więc sekcję trzeba dodać przed utworzeniem tagu.
 
+## 2026.11.7
+
+- Karta: integracja rejestruje ją jako zasób Lovelace (w trybie „storage”). Zasoby są wczytywane,
+  zanim dashboard utworzy karty, więc karta nie pokazuje już czasem „Błąd konfiguracji”
+  w aplikacji mobilnej. Dotąd była dołączana skryptem, na który frontend nie czeka, i na wolniejszym
+  urządzeniu dashboard próbował utworzyć kartę, zanim była zdefiniowana. Przy dashboardach
+  w trybie YAML działa jak dotąd.
+- README: uaktualniony opis ładowania karty.
+
 ## 2026.11.6
 
 - **Zmiana zachowania:** akcje `arm`, `disarm` i `clear_alarm` używają kodu z opcji tylko przy

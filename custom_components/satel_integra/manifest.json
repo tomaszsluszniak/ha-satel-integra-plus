@@ -10,7 +10,8 @@
   "config_flow": true,
   "dependencies": [
     "frontend",
-    "http"
+    "http",
+    "lovelace"
   ],
   "documentation": "https://github.com/tomaszsluszniak/ha-satel-integra-plus",
   "integration_type": "device",
@@ -22,5 +23,5 @@
   "requirements": [
     "satel-integra>=1.6.0,<1.7"
   ],
-  "version": "2026.11.6"
+  "version": "2026.11.7"
 }
