@@ -36,9 +36,10 @@ _LOGGER = logging.getLogger(__name__)
 
 PARTITION_UPDATE_DEBOUNCE_DELAY = 0.15
 # The module reports a newly armed partition in the "armed" list (0x0A, mode 0)
-# about 3 s before it reports it in the list of its real mode (0x2A/0x0B/0x0C).
-# Such a partition is shown as still arming until its mode is known: the mode
-# lists are read at once, and without a mode 1-3 it is mode 0 after this time.
+# 1-3 s before it reports it in the list of its real mode (0x2A/0x0B/0x0C); the
+# panel sets the mode bits later, so reading the lists at once does not help.
+# Such a partition is shown as still arming until its mode is known; without a
+# mode 1-3 after this time it is mode 0.
 ARM_MODE_SETTLE_TIME = 6.0
 # How long an arming in mode 0 sent from HA is expected (longest exit delay)
 EXPECTED_MODE0_TIMEOUT = 300.0
@@ -266,7 +267,6 @@ class SatelIntegraPartitionsCoordinator(
         for partition, deadline in list(self._expected_mode0.items()):
             if deadline <= now:
                 del self._expected_mode0[partition]
-        waiting = set(self._pending)
         data = settle_arm_modes(
             dict(self.client.controller.state.partition_states),
             self.data,
@@ -274,13 +274,6 @@ class SatelIntegraPartitionsCoordinator(
             self._expected_mode0,
             now,
         )
-        if self._pending.keys() - waiting:
-            # Ask for the mode lists instead of waiting for the module to report
-            self.config_entry.async_create_background_task(
-                self.hass,
-                self.client.controller.refresh_arm_modes(),
-                f"satel_integra {self.config_entry.entry_id} arm modes",
-            )
         self._cancel_recheck_timer()
         if self._pending:
             self._cancel_recheck = async_call_later(
