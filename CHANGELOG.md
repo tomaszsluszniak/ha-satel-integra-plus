@@ -3,6 +3,15 @@
 Nagłówek każdej sekcji to numer wersji bez `v`. Workflow Release pobiera stąd opis wydania dla
 tagu `vX.Y.Z`, więc sekcję trzeba dodać przed utworzeniem tagu.
 
+## 2026.11.8
+
+- Strefa uzbrajana w trybie 1–3 nie pokazuje już przez chwilę „Czuwania pełnego”. Centrala zgłasza
+  strefę na liście czuwających (tryb 0) o 1–3 s wcześniej niż na liście jej trybu, a integracja
+  brała ją przez ten czas za tryb 0. Teraz taka strefa pokazuje „Czas na wyjście”, aż centrala
+  zgłosi tryb. Jeśli nie zgłosi go w ciągu 6 s, strefa naprawdę czuwa w trybie 0. Uzbrojenie
+  w trybie 0 z Home Assistant (panel lub akcja `satel_integra.arm`) jest pokazywane od razu, a pełne
+  uzbrojenie z klawiatury do 6 s później niż dotąd.
+
 ## 2026.11.7
 
 - Karta: integracja rejestruje ją jako zasób Lovelace (w trybie „storage”). Zasoby są wczytywane,

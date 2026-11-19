@@ -256,6 +256,17 @@ class _Anything:
         return cls
 
 
+def async_call_later(hass, delay, action):
+    """Run the action after the delay on the running loop."""
+    import asyncio
+    from datetime import datetime
+
+    handle = asyncio.get_running_loop().call_later(
+        delay, lambda: action(datetime.now())
+    )
+    return handle.cancel
+
+
 def install() -> None:
     import probatio_stub  # noqa: F401  (installs "probatio")
 
@@ -355,6 +366,7 @@ def install() -> None:
         UpdateFailed=UpdateFailed,
     )
     _mod("homeassistant.helpers.debounce", Debouncer=Debouncer)
+    _mod("homeassistant.helpers.event", async_call_later=async_call_later)
     _mod(
         "homeassistant.helpers.entity_registry",
         RegistryEntry=object,

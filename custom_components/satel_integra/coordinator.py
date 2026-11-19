@@ -2,14 +2,17 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
-from datetime import timedelta
+from datetime import datetime, timedelta
 import logging
+import time
 from typing import override
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.debounce import Debouncer
+from homeassistant.helpers.event import async_call_later
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from satel_integra import (
     AlarmState,
@@ -32,6 +35,20 @@ from .satel_ext import SatelEvent, SatelExtReadCommand
 _LOGGER = logging.getLogger(__name__)
 
 PARTITION_UPDATE_DEBOUNCE_DELAY = 0.15
+# The module reports a newly armed partition in the "armed" list (0x0A, mode 0)
+# 1-3 s before it reports it in the list of its real mode (0x2A/0x0B/0x0C); the
+# panel sets the mode bits later, so reading the lists at once does not help.
+# Such a partition is shown as still arming until its mode is known; without a
+# mode 1-3 after this time it is mode 0.
+ARM_MODE_SETTLE_TIME = 6.0
+# How long an arming in mode 0 sent from HA is expected (longest exit delay)
+EXPECTED_MODE0_TIMEOUT = 300.0
+
+_HIGHER_ARMED_MODES = (
+    AlarmState.ARMED_MODE1,
+    AlarmState.ARMED_MODE2,
+    AlarmState.ARMED_MODE3,
+)
 TEMPERATURE_SENSOR_UPDATE_INTERVAL = timedelta(minutes=5)
 EVENT_LOG_MAX_NEW_EVENTS = 30
 
@@ -153,6 +170,49 @@ class SatelIntegraOutputsCoordinator(
         )
 
 
+def settle_arm_modes(
+    data: dict[AlarmState, list[int]],
+    previous: dict[AlarmState, list[int]],
+    pending: dict[int, float],
+    expected_mode0: dict[int, float],
+    now: float,
+) -> dict[AlarmState, list[int]]:
+    """Hold back newly armed partitions whose arming mode is not reported yet.
+
+    A partition that has just appeared in the mode 0 list without being in a
+    mode 1-3 list is moved to the exit countdown list (shown as arming) until
+    its mode list arrives, at most ARM_MODE_SETTLE_TIME after it was first seen
+    (then it really is mode 0). `pending` (partition -> deadline) and
+    `expected_mode0` (partitions armed in mode 0 from HA) are updated in place.
+    """
+    mode0 = data.get(AlarmState.ARMED_MODE0, [])
+    for partition in [p for p in pending if p not in mode0]:
+        del pending[partition]
+    if AlarmState.ARMED_MODE0 not in previous:
+        # First report after start: the partitions were armed before
+        return data
+    higher = {p for state in _HIGHER_ARMED_MODES for p in data.get(state, ())}
+    shown = set(previous[AlarmState.ARMED_MODE0])
+    held: list[int] = []
+    for partition in mode0:
+        if partition in higher or partition in shown:
+            pending.pop(partition, None)
+        elif expected_mode0.pop(partition, None) is not None:
+            pending.pop(partition, None)
+        elif now < pending.setdefault(partition, now + ARM_MODE_SETTLE_TIME):
+            held.append(partition)
+        else:
+            del pending[partition]
+    if not held:
+        return data
+    _LOGGER.debug("Arming mode of partitions %s not reported yet", held)
+    settled = dict(data)
+    settled[AlarmState.ARMED_MODE0] = [p for p in mode0 if p not in held]
+    countdown = AlarmState.EXIT_COUNTDOWN_UNDER_10
+    settled[countdown] = sorted({*data.get(countdown, ()), *held})
+    return settled
+
+
 class SatelIntegraPartitionsCoordinator(
     SatelIntegraBaseCoordinator[dict[AlarmState, list[int]]]
 ):
@@ -164,16 +224,15 @@ class SatelIntegraPartitionsCoordinator(
         """Initialize the coordinator."""
         super().__init__(hass, entry, client)
         self.data = {}
+        self._pending: dict[int, float] = {}
+        self._expected_mode0: dict[int, float] = {}
+        self._cancel_recheck: Callable[[], None] | None = None
         self._debouncer = Debouncer(
             hass=self.hass,
             logger=_LOGGER,
             cooldown=PARTITION_UPDATE_DEBOUNCE_DELAY,
             immediate=False,
-            function=callback(
-                lambda: self.async_set_updated_data(
-                    dict(self.client.controller.state.partition_states)
-                )
-            ),
+            function=self._publish,
         )
 
     @override
@@ -181,6 +240,7 @@ class SatelIntegraPartitionsCoordinator(
         """Set up client callbacks for this coordinator."""
         super().setup()
         self.config_entry.async_on_unload(self._debouncer.async_shutdown)
+        self.config_entry.async_on_unload(self._cancel_recheck_timer)
         self.config_entry.async_on_unload(
             self.client.controller.add_alarm_status_callback(
                 self.partitions_update_callback
@@ -191,6 +251,46 @@ class SatelIntegraPartitionsCoordinator(
     def partitions_update_callback(self) -> None:
         """Update partition objects as per notification from the alarm."""
         self._debouncer.async_schedule_call()
+
+    def expect_arm_mode(self, partitions: Iterable[int], mode: int) -> None:
+        """Note the mode of an arming sent from HA (mode 0 is shown at once)."""
+        deadline = time.monotonic() + EXPECTED_MODE0_TIMEOUT
+        for partition in partitions:
+            if mode == 0:
+                self._expected_mode0[partition] = deadline
+            else:
+                self._expected_mode0.pop(partition, None)
+
+    @callback
+    def _publish(self) -> None:
+        now = time.monotonic()
+        for partition, deadline in list(self._expected_mode0.items()):
+            if deadline <= now:
+                del self._expected_mode0[partition]
+        data = settle_arm_modes(
+            dict(self.client.controller.state.partition_states),
+            self.data,
+            self._pending,
+            self._expected_mode0,
+            now,
+        )
+        self._cancel_recheck_timer()
+        if self._pending:
+            self._cancel_recheck = async_call_later(
+                self.hass, max(min(self._pending.values()) - now, 0), self._recheck
+            )
+        self.async_set_updated_data(data)
+
+    @callback
+    def _recheck(self, _now: datetime) -> None:
+        self._cancel_recheck = None
+        self._publish()
+
+    @callback
+    def _cancel_recheck_timer(self) -> None:
+        if self._cancel_recheck is not None:
+            self._cancel_recheck()
+            self._cancel_recheck = None
 
 
 @dataclass(frozen=True)
