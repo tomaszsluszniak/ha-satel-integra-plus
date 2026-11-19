@@ -267,6 +267,7 @@ class _SatelPanelMixin(AlarmControlPanelEntity):
         controller = self.coordinator.client.controller
         resolved = self._code(code)
         for mode, partitions in sorted(modes.items()):
+            self.coordinator.expect_arm_mode(partitions, mode)
             await async_validate_command(
                 controller.arm(resolved, partitions, mode, wait_for_result=True)
             )

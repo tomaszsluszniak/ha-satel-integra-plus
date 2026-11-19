@@ -665,6 +665,29 @@ class SatelExtended(AsyncSatel):
 
     # endregion
 
+    async def refresh_arm_modes(self) -> None:
+        """Read the lists of partitions armed in modes 1-3 now.
+
+        The responses go through the monitoring handlers, so the partition
+        states and their callbacks are updated as for a monitored change.
+        """
+        for command in (
+            SatelReadCommand.PARTITIONS_ARMED_MODE1,
+            SatelReadCommand.PARTITIONS_ARMED_MODE2,
+            SatelReadCommand.PARTITIONS_ARMED_MODE3,
+        ):
+            if not self.connected:
+                return
+            try:
+                response = await self._send_data_and_wait(SatelWriteMessage(command))
+            except Exception as err:  # noqa: BLE001
+                _LOGGER.debug("Cannot read %s: %s", command.name, err)
+                return
+            if response is not None:
+                _LOGGER.debug(
+                    "%s read: %s", command.name, response.get_active_bits(4)
+                )
+
     async def read_module_info(self):
         """Read the communication module info, None on failure."""
         try:

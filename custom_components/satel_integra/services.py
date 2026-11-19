@@ -157,10 +157,14 @@ async def _async_handle(call: ServiceCall) -> ServiceResponse:
                 raise ServiceValidationError(
                     translation_domain=DOMAIN, translation_key="no_bypass_unsupported"
                 )
+        partitions = _partitions(entry, call)
+        entry.runtime_data.coordinator_partitions.expect_arm_mode(
+            partitions, call.data[ATTR_MODE]
+        )
         await async_validate_command(
             controller.arm_ext(
                 code,
-                _partitions(entry, call),
+                partitions,
                 call.data[ATTR_MODE],
                 force=call.data[ATTR_FORCE],
                 no_bypass=call.data[ATTR_NO_BYPASS],
